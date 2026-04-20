@@ -1,0 +1,12 @@
+spring:
+  docker:
+    compose:
+      file: compose-test.yaml
+      lifecycle-management: start-and-stop
+      skip:
+        in-tests: false
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
