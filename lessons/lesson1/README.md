@@ -480,11 +480,7 @@ public class TaskExecutionController {
 
 ## Паттерн программирования, который студент должен понять в уроке 1
 
-В уроке 1 студент впервые знакомится с базовым слоистым шаблоном backend-приложения:
-
-### Layered Architecture
-
-Идея:
+Сначала студент должен увидеть простую идею:
 
 - web-слой принимает запрос
 - прикладной слой выполняет use case
@@ -495,6 +491,10 @@ public class TaskExecutionController {
 - `TaskExecutionController` — web-слой
 - `TaskRunService` — application/service-слой
 - `OrchestratorStatusResponse` — response DTO
+
+Только после этого можно сказать, что такой способ организации кода называется:
+
+### Layered Architecture
 
 ### Почему это важно
 
