@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: stage-02-start
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskmanager_stage01
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080

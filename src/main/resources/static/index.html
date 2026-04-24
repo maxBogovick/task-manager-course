@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Orchestrator Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h1>NexusTasks</h1>
+            </div>
+            <nav class="menu">
+                <a href="#" class="menu-item active" data-view="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#" class="menu-item" data-view="tasks">
+                    <i class="fa-solid fa-list-check"></i> Definitions
+                </a>
+                <a href="#" class="menu-item" data-view="executions">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Executions
+                </a>
+            </nav>
+            <div class="system-status glass-panel">
+                <h4>System Status</h4>
+                <div class="status-indicator">
+                    <span class="dot active"></span>
+                    <span id="orchestrator-state">Online</span>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="label">Running</span>
+                        <span class="value" id="running-tasks-count">0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Threads</span>
+                        <span class="value" id="active-threads-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar glass-panel">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search tasks, executions...">
+                </div>
+                <div class="user-profile">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <span>Admin</span>
+                </div>
+            </header>
+
+            <div id="view-dashboard" class="view active">
+                <div class="header-action">
+                    <h2>Overview</h2>
+                    <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Task</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <div class="icon-wrap blue"><i class="fa-solid fa-box"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Tasks</h3>
+                            <p id="total-tasks-stat">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="icon-wrap green"><i class="fa-solid fa-check-double"></i></div>
+                        <div class="stat-info">
+                            <h3>Completed</h3>
+                            <p id="completed-exec-stat">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="icon-wrap red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="stat-info">
+                            <h3>Failed</h3>
+                            <p id="failed-exec-stat">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-section">
+                    <div class="section-header">
+                        <h3>Recent Executions</h3>
+                        <a href="#" onclick="switchView('executions')">View All</a>
+                    </div>
+                    <div class="glass-panel table-container">
+                        <table id="recent-executions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th>Duration</th>
+                                    <th>Started</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        <div class="empty-state" id="recent-exec-empty" style="display: none;">
+                            <i class="fa-solid fa-inbox"></i>
+                            <p>No recent executions found.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-tasks" class="view" style="display: none;">
+                <div class="header-action">
+                    <h2>Task Definitions</h2>
+                    <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Task</button>
+                </div>
+                <div class="glass-panel table-container">
+                    <table id="tasks-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-executions" class="view" style="display: none;">
+                <div class="header-action">
+                    <h2>Execution History</h2>
+                    <button class="btn btn-secondary" onclick="loadExecutions()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </div>
+                <div class="glass-panel table-container">
+                    <table id="executions-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Task ID</th>
+                                <th>Status</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Create New Task</h3>
+                <button class="close-btn" onclick="closeModal('create-modal')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="create-task-form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="task-name" required placeholder="e.g. Daily DB Backup">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="task-desc" placeholder="Optional description">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="task-type" required>
+                                <option value="Shell">Shell</option>
+                                <option value="HTTP">HTTP</option>
+                                <option value="FileSystem">FileSystem</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cron Schedule (Optional)</label>
+                            <input type="text" id="task-cron" placeholder="e.g. 0 0 * * * *">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Config (JSON)</label>
+                        <textarea id="task-config" rows="4" required placeholder='{"command": "echo hello"}'></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Max Retries</label>
+                            <input type="number" id="task-retries" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Retry Delay (sec)</label>
+                            <input type="number" id="task-delay" value="30" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Timeout (sec)</label>
+                            <input type="number" id="task-timeout" value="300" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="task-enabled" checked>
+                            <span class="checkmark"></span> Enabled
+                        </label>
+                    </div>
+                    <!-- Hidden field for user ID -->
+                    <input type="hidden" id="task-userid" value="1">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('create-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitCreateTask()">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Modal -->
+    <div class="modal-overlay" id="output-modal">
+        <div class="modal glass-panel wide">
+            <div class="modal-header">
+                <h3>Execution Details <span class="badge" id="output-status"></span></h3>
+                <button class="close-btn" onclick="closeModal('output-modal')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="terminal-view">
+                    <pre id="execution-output">Loading...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

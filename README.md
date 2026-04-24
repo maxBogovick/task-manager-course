@@ -56,6 +56,14 @@ DB_USERNAME=myuser DB_PASSWORD=mypass mvn spring-boot:run
 
 API: `http://localhost:8080`
 
+## Training Ground
+
+This repository also includes a training scaffold for turning the project into a backend engineering learning platform.
+
+- Entry point: [training/README.md](./training/README.md)
+- Curriculum: [training/CURRICULUM.md](./training/CURRICULUM.md)
+- Exercise catalog: [training/exercises/INDEX.md](./training/exercises/INDEX.md)
+
 ### Тесты
 ```bash
 mvn test   # 18 тестов, ~11 сек
